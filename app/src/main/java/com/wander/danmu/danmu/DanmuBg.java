@@ -20,14 +20,13 @@ import java.util.List;
  */
 public class DanmuBg extends Contanier {
     private final float HEIGHT = 36;
-    private List<CommentNew> commentNews;
+    public static List<CommentNew> commentNews = new ArrayList<>();
     private List<DanMu> danMuList;
     private Context context;
     private float step = 15;
     private final Paint paint;
 
-    public DanmuBg(List<CommentNew> commentNews, Context context) {
-        this.commentNews = commentNews;
+    public DanmuBg(Context context) {
         this.context = context;
         danMuList = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
@@ -45,18 +44,22 @@ public class DanmuBg extends Contanier {
     public void childrenView(Canvas canvas) {
         super.childrenView(canvas);
 
-        RectF rectF = new RectF(0, 0, 100, PixelTools.dip2px(context, HEIGHT));
+        RectF rectF = new RectF(0, 0, PixelTools.dip2px(context,200), PixelTools.dip2px(context, HEIGHT));
         canvas.drawRoundRect(rectF, HEIGHT / 2, HEIGHT / 2, paint);
         Paint textPaint = new Paint();
         textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(14);
-        canvas.drawText(danMuList.get(0).getCommentNew().getContent(), App.SCREEN_WIDTH, 0, textPaint);
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(PixelTools.px2sp(context,20));
+        canvas.drawText("text赞一个", App.SCREEN_WIDTH, 0, textPaint);
 
         setX(getX() + step);
     }
 
-    public void addComment(CommentNew commentNew){
+    public static void addComment(CommentNew commentNew){
         commentNews.add(commentNew);
+    }
+
+    public static void addComments(List<CommentNew> commentNews){
+        commentNews.addAll(commentNews);
     }
 }

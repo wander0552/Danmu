@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 import com.lidroid.xutils.BitmapUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wander.danmu.danmu.CommentNew;
+import com.wander.danmu.danmu.DanmuBg;
 import com.wander.danmu.danmu.DanmuSurface;
 
 import org.json.JSONArray;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relative);
-        danmuSurface = new DanmuSurface(this, list);
+        danmuSurface = new DanmuSurface(this);
         relativeLayout.addView(danmuSurface);
 
 
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     list = gson.fromJson(object.optString("list"), new TypeToken<List<CommentNew>>() {
                     }.getType());
-                    danmuSurface.addDanmu(list.get(0));
+                    DanmuBg.addComments(list);
                     Log.e("list", list.get(0).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -19,18 +19,16 @@ import java.util.TimerTask;
  * email 805677461@qq.com
  */
 public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback {
-    private List<CommentNew> commentNews = new ArrayList<>();
     private Context context;
     private final DanmuBg danmuBg;
-    private String tag = "surfaceCreated";
+    private String tag = "surfaceView";
 
-    public DanmuSurface(Context context, List<CommentNew> commentNews) {
+    public DanmuSurface(Context context) {
         super(context);
         this.context = context;
-        this.commentNews = commentNews;
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        danmuBg = new DanmuBg(commentNews, context);
+        danmuBg = new DanmuBg(context);
     }
 
     public void draw() {
@@ -63,28 +61,20 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         }
     }
 
-    public void addDanmu(CommentNew commentNew) {
-        commentNews.add(commentNew);
-        danmuBg.addComment(commentNew);
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(tag, tag + "\t" + holder.toString());
         startTimer();
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        Log.d(tag, holder.toString());
-        if (commentNews != null && commentNews.size() > 0) {
-            startTimer();
-        }
-    }
-
-    @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.d(tag, holder.toString());
+        Log.d(tag, "surfaceChanged\t" + holder.toString());
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d(tag, holder.toString());
+        Log.d(tag, "surfaceDestroyed\t" + holder.toString());
         stopTimer();
     }
 }
