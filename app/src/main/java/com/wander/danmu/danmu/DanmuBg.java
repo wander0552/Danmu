@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.text.TextPaint;
 
 import com.wander.danmu.App;
 import com.wander.danmu.PixelTools;
@@ -46,11 +47,11 @@ public class DanmuBg extends Contanier {
 
         RectF rectF = new RectF(0, 0, PixelTools.dip2px(context,200), PixelTools.dip2px(context, HEIGHT));
         canvas.drawRoundRect(rectF, HEIGHT / 2, HEIGHT / 2, paint);
-        Paint textPaint = new Paint();
+        TextPaint textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(PixelTools.px2sp(context, 500));
-        canvas.drawText("text赞一个", 0, App.SCREEN_HEIGHT, textPaint);
+        textPaint.setColor(Color.RED);
+        textPaint.setTextSize(PixelTools.sp2px(context, 50));
+        canvas.drawText("text赞一个", 200, 200, textPaint);
 
         setX(getX() + step);
     }

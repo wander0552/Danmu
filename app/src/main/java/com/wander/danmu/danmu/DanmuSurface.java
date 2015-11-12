@@ -4,6 +4,9 @@ package com.wander.danmu.danmu;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -22,6 +25,7 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     private Context context;
     private final DanmuBg danmuBg;
     private String tag = "surfaceView";
+    private Canvas canvas;
 
     public DanmuSurface(Context context) {
         super(context);
@@ -32,8 +36,13 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     }
 
     public void draw() {
-        Canvas canvas = getHolder().lockCanvas();
+        canvas = getHolder().lockCanvas();
         canvas.drawColor(Color.TRANSPARENT);
+        Paint p = new Paint();
+        //清屏
+        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+        canvas.drawPaint(p);
+        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         danmuBg.draw(canvas);
         getHolder().unlockCanvasAndPost(canvas);
     }
