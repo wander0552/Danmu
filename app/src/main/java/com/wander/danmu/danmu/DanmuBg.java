@@ -49,8 +49,8 @@ public class DanmuBg extends Contanier {
         Paint textPaint = new Paint();
         textPaint.setAntiAlias(true);
         textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(PixelTools.px2sp(context,20));
-        canvas.drawText("text赞一个", App.SCREEN_WIDTH, 0, textPaint);
+        textPaint.setTextSize(PixelTools.px2sp(context, 500));
+        canvas.drawText("text赞一个", 0, App.SCREEN_HEIGHT, textPaint);
 
         setX(getX() + step);
     }
