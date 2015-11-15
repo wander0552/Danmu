@@ -8,13 +8,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextPaint;
 
-import com.wander.danmu.App;
 import com.wander.danmu.EntryActivity;
-import com.wander.danmu.MainActivity;
 import com.wander.danmu.PixelTools;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -22,7 +17,7 @@ import java.util.List;
  * email 805677461@qq.com
  * 弹幕绘制
  */
-public class DanMuDraw extends Contanier {
+public class DanmuDraw extends Contanier {
     public int HEIGHT;
     private Context context;
     private float step = 15;
@@ -31,7 +26,7 @@ public class DanMuDraw extends Contanier {
     private Rect rect;
     private int height;
 
-    public DanMuDraw(Context context, int height, int step) {
+    public DanmuDraw(Context context, int height, int step) {
         this.context = context;
         this.height = height;
         HEIGHT = PixelTools.dip2px(context, 36);
