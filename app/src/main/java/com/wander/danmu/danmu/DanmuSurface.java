@@ -26,13 +26,13 @@ import java.util.TimerTask;
 public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback {
     private Context context;
     public static List<CommentNew> commentNews = new ArrayList<>();
-    private final DanmuDraw danmu1;
+    private final DanDraw danmu1;
     private String tag = "surfaceView";
     private Canvas canvas;
     private float step = 15;
     private Rect rect;
-    private final DanmuDraw danmu2;
-    private final DanmuDraw danmu3;
+    private final DanDraw danmu2;
+    private final DanDraw danmu3;
 
     public DanmuSurface(Context context) {
         super(context);
@@ -40,9 +40,9 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         rect = EntryActivity.rect;
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        danmu1 = new DanmuDraw(context, 0, 15);
-        danmu2 = new DanmuDraw(context, danmu1.HEIGHT + 30, 10);
-        danmu3 = new DanmuDraw(context, (danmu1.HEIGHT + 30) * 2, 20);
+        danmu1 = new DanDraw(context, 0, 15);
+        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 10);
+        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 20);
     }
 
     public void draw() {
