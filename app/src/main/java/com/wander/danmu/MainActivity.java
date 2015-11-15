@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -14,16 +13,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.lidroid.xutils.BitmapUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wander.danmu.danmu.CommentNew;
-import com.wander.danmu.danmu.DanmuBg;
 import com.wander.danmu.danmu.DanmuSurface;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     list = gson.fromJson(object.optString("list"), new TypeToken<List<CommentNew>>() {
                     }.getType());
-                    DanmuBg.addComments(list);
+                    DanmuSurface.commentNews.addAll(list);
                     Log.e("list", list.get(0).toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
