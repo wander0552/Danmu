@@ -31,8 +31,10 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     private Canvas canvas;
     private float step = 15;
     private Rect rect;
-    private final DanDraw danmu2;
-    private final DanDraw danmu3;
+    private  DanDraw danmu2;
+    private  DanDraw danmu3;
+    private  DanDraw danmu4;
+    private  DanDraw danmu5;
 
     public DanmuSurface(Context context) {
         super(context);
@@ -43,6 +45,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu1 = new DanDraw(context, 0, 15);
         danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 10);
         danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 20);
+        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 20);
+        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 20);
     }
 
     public void draw() {
@@ -59,6 +63,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu1.draw(canvas);
         danmu2.draw(canvas);
         danmu3.draw(canvas);
+        danmu4.draw(canvas);
+        danmu5.draw(canvas);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
