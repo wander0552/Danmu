@@ -33,13 +33,13 @@ public class DanDraw extends Contanier {
     private int height;
     private Bitmap header;
 
-    public DanDraw(Context context, int height, int step) {
+    public DanDraw(Context context, int height, int step,int x) {
         this.context = context;
         this.height = height;
         HEIGHT = PixelTools.dip2px(context, 36);
         rect = EntryActivity.rect;
         this.step = step;
-        setX(rect.right + PixelTools.dip2px(context, 50));
+        setX(rect.right + PixelTools.dip2px(context, x));
         setY(height);
         header = BitmapFactory.decodeResource(context.getResources(), R.drawable.header);
 

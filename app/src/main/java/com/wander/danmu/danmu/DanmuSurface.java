@@ -35,6 +35,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     private  DanDraw danmu3;
     private  DanDraw danmu4;
     private  DanDraw danmu5;
+    private  DanDraw danmu52;
+    private  DanDraw danmu53;
 
     public DanmuSurface(Context context) {
         super(context);
@@ -42,11 +44,13 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         rect = EntryActivity.rect;
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-        danmu1 = new DanDraw(context, 0, 15);
-        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 10);
-        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 20);
-        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 20);
-        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 20);
+        danmu1 = new DanDraw(context, 0, 15,50);
+        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 10,50);
+        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 20,50);
+        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 20,30);
+        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 20,30);
+        danmu52 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 20,250);
+        danmu53 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 20,460);
     }
 
     public void draw() {
@@ -65,6 +69,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu3.draw(canvas);
         danmu4.draw(canvas);
         danmu5.draw(canvas);
+        danmu52.draw(canvas);
+        danmu53.draw(canvas);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
