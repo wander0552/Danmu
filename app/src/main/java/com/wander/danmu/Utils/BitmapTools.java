@@ -12,6 +12,8 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 
 import com.wander.danmu.Utils.dir.DirectoryContext;
@@ -129,10 +131,17 @@ public class BitmapTools {
 	 * 保存bitmap到文件
 	 *
 	 * @param bmp
-	 * @param filePath
+	 * @param fileName
 	 * @return
 	 */
-	public static boolean saveBitmap2file(Bitmap bmp, String filePath) {
+	public static boolean saveBitmap2file(Bitmap bmp, String fileName,Context context) {
+		File externalFilesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		String filePath = externalFilesDir
+				+ File.separator + fileName + ".jpg";
+		File tempFile = new File(filePath);
+		if (tempFile.exists()) {
+			tempFile.delete();
+		}
 		CompressFormat format = Bitmap.CompressFormat.JPEG;
 		int quality = 100;
 		OutputStream stream = null;
@@ -140,6 +149,7 @@ public class BitmapTools {
 			stream = new FileOutputStream(filePath);
 			bmp.compress(format, quality, stream);
 			stream.close();
+			Log.e("save","success");
 			return true;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -167,7 +177,7 @@ public class BitmapTools {
 		View decorview = context.getWindow().getDecorView();
 		decorview.setDrawingCacheEnabled(true);
 		Bitmap bmp = decorview.getDrawingCache();
-		saveBitmap2file(bmp, filePath);
+		saveBitmap2file(bmp, filePath,null);
 		return filePath;
 	}
 

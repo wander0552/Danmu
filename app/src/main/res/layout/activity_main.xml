@@ -4,4 +4,23 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg" tools:context=".MainActivity"
     android:id="@+id/relative">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/content"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="sfsd"
+        android:textColor="#ededed"
+        android:textSize="14sp"
+        />
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/image"
+        android:scaleType="centerInside"
+        android:layout_above="@id/content"
+        android:layout_marginBottom="10dp"
+        />
 </RelativeLayout>
