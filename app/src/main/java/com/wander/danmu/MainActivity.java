@@ -1,5 +1,6 @@
 package com.wander.danmu;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.os.Build;
@@ -27,7 +28,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lidroid.xutils.BitmapUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.wander.danmu.Utils.BitmapTools;
+import com.wander.danmu.Utils.CircleImageView;
 import com.wander.danmu.Utils.emoji.FaceConversionUtil;
 import com.wander.danmu.danmu.CommentNew;
 import com.wander.danmu.danmu.DanmuSurface;
@@ -39,8 +43,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout relativeLayout;
     private ImageView imageView;
     private TextView textView;
+    private RelativeLayout shot;
+    private CircleImageView header;
 
     @Override
     protected void onStart() {
@@ -65,6 +69,12 @@ public class MainActivity extends AppCompatActivity {
         relativeLayout = (RelativeLayout) findViewById(R.id.relative);
         danmuSurface = new DanmuSurface(this);
         relativeLayout.addView(danmuSurface);
+        danmuSurface.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, Main2Activity.class));
+            }
+        });
         initView();
 
 
@@ -79,42 +89,32 @@ public class MainActivity extends AppCompatActivity {
         ImageLoader instance = ImageLoader.getInstance();
     }
 
-    void initView(){
+    void initView() {
         imageView = (ImageView) findViewById(R.id.image);
-        textView = (TextView) findViewById(R.id.content);
-        textView.setVisibility(View.INVISIBLE);
-        textView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        shot = (RelativeLayout) findViewById(R.id.play_common_rl);
+        textView = (TextView) findViewById(R.id.play_common_text_content);
+        header = (CircleImageView) findViewById(R.id.play_common_img_usericon);
+
+//        textView.setVisibility(View.INVISIBLE);
+        shot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessageAtTime(msg, 100);
+//                Message msg = new Message();
+//                msg.what = 1;
+//                handler.sendMessageAtTime(msg, 100);
             }
         });
-/*        textView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                Message msg = new Message();
-                msg.what = 1;
-                handler.sendMessageAtTime(msg, 100);
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-
-            }
-        });*/
-        textView.setDrawingCacheEnabled(true);
+        shot.setDrawingCacheEnabled(true);
     }
 
-    Handler handler = new Handler(){
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1){
-                Bitmap bitmap = textView.getDrawingCache();
+            if (msg.what == 1) {
+                Bitmap bitmap = shot.getDrawingCache();
                 imageView.setImageBitmap(bitmap);
-                BitmapTools.saveBitmap2file(bitmap,"good",MainActivity.this);
+//                BitmapTools.saveBitmap2file(bitmap, "good", MainActivity.this);
             }
         }
     };
@@ -135,6 +135,30 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("list", list.get(0).toString());
                     try {
                         textView.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(list.get(3).getContent(), "utf-8")));
+                        ImageLoader.getInstance().displayImage(URLDecoder.decode(list.get(3).getAvatar(),"utf-8"), header, new ImageLoadingListener() {
+                            @Override
+                            public void onLoadingStarted(String s, View view) {
+
+                            }
+
+                            @Override
+                            public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                            }
+
+                            @Override
+                            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                                header.setImageBitmap(bitmap);
+                                Message msg = new Message();
+                                msg.what = 1;
+                                handler.sendMessageAtTime(msg, 100);
+                            }
+
+                            @Override
+                            public void onLoadingCancelled(String s, View view) {
+
+                            }
+                        });
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }

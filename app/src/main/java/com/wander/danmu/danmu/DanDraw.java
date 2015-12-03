@@ -37,7 +37,7 @@ public class DanDraw extends baseDraw {
     private RectF headerRectF;
     private int danmuWidth;
 
-    public DanDraw(Context context, int height, int step,int x) {
+    public DanDraw(Context context, int height, int step, int x) {
         this.context = context;
         this.height = height;
         HEIGHT = PixelTools.dip2px(context, 36);
@@ -49,11 +49,11 @@ public class DanDraw extends baseDraw {
 
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(0x55000000);
-        paint.setStrokeWidth(0.3f);
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+//        paint.setColor(0x55000000);
+//        paint.setStrokeWidth(0.3f);
+//        paint.setStyle(Paint.Style.FILL_AND_STROKE);
 
-        textPaint = new TextPaint();
+     /*   textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(PixelTools.sp2px(context, 14));
@@ -65,7 +65,7 @@ public class DanDraw extends baseDraw {
 
         rectF = new RectF(0, 0, PixelTools.dip2px(context, 200), HEIGHT);
         headerRectF = new RectF(0, 0, PixelTools.dip2px(context, 36), HEIGHT);
-        danmuWidth = PixelTools.dip2px(context, 200);
+        danmuWidth = PixelTools.dip2px(context, 200);*/
     }
 
     @Override
@@ -73,17 +73,17 @@ public class DanDraw extends baseDraw {
         super.drawView(canvas);
 
         //画背景
-
-        canvas.drawRoundRect(rectF, HEIGHT / 2, HEIGHT / 2, paint);
+        canvas.drawBitmap(header, 0, 0, paint);
+//        canvas.drawRoundRect(rectF, HEIGHT / 2, HEIGHT / 2, paint);
         //画头像
 
 //        canvas.drawCircle(0, rect.top, HEIGHT / 2, headerPaint);
-        canvas.drawRoundRect(headerRectF, HEIGHT / 2, HEIGHT / 2, headerPaint);
+//        canvas.drawRoundRect(headerRectF, HEIGHT / 2, HEIGHT / 2, headerPaint);
 
-        canvas.drawText("text赞一个", HEIGHT, rect.top, textPaint);
+//        canvas.drawText("text赞一个", HEIGHT, rect.top, textPaint);
 
         setX(getX() - step);
-        if (getX() < 0 - danmuWidth) {
+        if (getX() < 0 - header.getWidth()) {
             setX(rect.right);
         }
     }

@@ -52,11 +52,11 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         xfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
         xfermode1 = new PorterDuffXfermode(PorterDuff.Mode.SRC);
 
-        danmu1 = new DanDraw(context, 0, 4, 50);
-        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 5, 30);
-        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 3, 0);
-        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 2, 70);
-        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 4, 30);
+        danmu1 = new DanDraw(context, 0, 7, 50);
+        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 8, 30);
+        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 5, 0);
+        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 6, 70);
+        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 8, 30);
         danmu52 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 2, 250);
         danmu53 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 1, 460);
     }
@@ -76,8 +76,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu3.draw(canvas);
         danmu4.draw(canvas);
 //        danmu5.draw(canvas);
-        danmu52.draw(canvas);
-        danmu53.draw(canvas);
+//        danmu52.draw(canvas);
+//        danmu53.draw(canvas);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
@@ -94,7 +94,7 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
                     draw();
                 }
             };
-            timer.schedule(task, 10, 17);
+            timer.schedule(task, 10, 40);
         }
     }
 

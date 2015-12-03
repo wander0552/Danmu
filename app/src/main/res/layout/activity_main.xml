@@ -4,23 +4,39 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg" tools:context=".MainActivity"
     android:id="@+id/relative">
-    <TextView
+    <RelativeLayout
+        android:id="@+id/play_common_rl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/content"
-        android:gravity="center_vertical"
-        android:singleLine="true"
-        android:text="sfsd"
-        android:textColor="#ededed"
-        android:textSize="14sp"
-        />
+        android:background="@drawable/corners_black_half"
+        android:visibility="invisible"
+        android:paddingRight="20dip" >
+
+        <com.wander.danmu.Utils.CircleImageView
+            android:id="@+id/play_common_img_usericon"
+            android:layout_width="36dip"
+            android:layout_height="36dip"
+            />
+        <TextView
+            android:id="@+id/play_common_text_content"
+            android:layout_width="wrap_content"
+            android:layout_height="36dip"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/play_common_img_usericon"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#ededed"
+            android:textSize="14sp" />
+    </RelativeLayout>
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:id="@+id/image"
         android:scaleType="centerInside"
-        android:layout_above="@id/content"
+        android:layout_above="@id/play_common_rl"
         android:layout_marginBottom="10dp"
         />
 </RelativeLayout>
