@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextPaint;
@@ -18,6 +19,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadCallBack;
+import com.lidroid.xutils.bitmap.callback.BitmapLoadFrom;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -117,11 +122,17 @@ public class DanDraw extends baseDraw {
         return bitmap;
     }
 
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
                 bitmap = view.getDrawingCache();
+                context.imageView.setImageBitmap(bitmap);
+//                BitmapTools.saveBitmap2file(bitmap, "good", context);
             }
         }
     };
@@ -132,30 +143,37 @@ public class DanDraw extends baseDraw {
         }
         try {
             content.setText(FaceConversionUtil.getInstace(context).getExpressionString(URLDecoder.decode(commentNew.getContent(), "utf-8")));
-            ImageLoader.getInstance().displayImage(URLDecoder.decode(commentNew.getAvatar(), "utf-8"), header, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String s, View view) {
+            try {
+                String decode = URLDecoder.decode(commentNew.getAvatar(), "utf-8");
+                ImageLoader.getInstance().loadImage(decode, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String s, View view) {
 
-                }
+                    }
 
-                @Override
-                public void onLoadingFailed(String s, View view, FailReason failReason) {
+                    @Override
+                    public void onLoadingFailed(String s, View view, FailReason failReason) {
 
-                }
+                    }
 
-                @Override
-                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                    header.setImageBitmap(bitmap);
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessageAtTime(msg, 100);
-                }
+                    @Override
+                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                        header.setImageBitmap(bitmap);
+                        Message msg = new Message();
+                        msg.what = 1;
+                        handler.sendMessageAtTime(msg, 100);
+                    }
 
-                @Override
-                public void onLoadingCancelled(String s, View view) {
+                    @Override
+                    public void onLoadingCancelled(String s, View view) {
 
-                }
-            });
+                    }
+                });
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

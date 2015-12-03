@@ -19,7 +19,16 @@ import android.view.View;
 import com.wander.danmu.Utils.dir.DirectoryContext;
 import com.wander.danmu.Utils.dir.DirectoryManager;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -118,6 +127,50 @@ public class BitmapTools {
 
 		opt.inJustDecodeBounds = false;// 最后把标志复原
 		return opt;
+	}
+
+	/**
+	 * Get image from server by HttpClient
+	 *
+	 * @param imageUrl
+	 * @param sc
+	 *            显示的像素大小
+	 * @return
+	 */
+	public static Bitmap getImageByHttpClient(String imageUrl, int imageWidth,
+											  int imageHeight) {
+		Bitmap bitmap = null;
+		try {
+			HttpClient client = new DefaultHttpClient();
+			HttpGet getRequest = new HttpGet(imageUrl);
+			HttpResponse response = client.execute(getRequest);
+			// Http response status code 200 OK
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				// response entity
+				HttpEntity responseEntity = response.getEntity();
+				InputStream is = responseEntity.getContent();
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				byte[] buf = new byte[1024];
+				for (int len = 0; (len = is.read(buf)) != -1;) {
+					baos.write(buf, 0, len);
+				}
+				baos.flush();
+				byte[] data = baos.toByteArray();
+				bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
+						BitmapTools.getBitmapOptions(imageWidth, imageHeight));
+				if (is != null) {
+					is.close();
+				}
+				if (baos != null) {
+					baos.close();
+				}
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bitmap;
 	}
 
 	public static Bitmap createBitmapByInputstream(Context context, int res,

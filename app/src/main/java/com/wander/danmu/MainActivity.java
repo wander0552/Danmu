@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private DanmuSurface danmuSurface;
     private List<CommentNew> list = new ArrayList<>();
     private RelativeLayout relativeLayout;
-    private ImageView imageView;
+    public ImageView imageView;
     private TextView textView;
     private RelativeLayout shot;
     private CircleImageView header;
@@ -115,6 +115,19 @@ public class MainActivity extends AppCompatActivity {
 
 
     public CommentNew getDanmu() {
+        if (position >= list.size() && needLoadMore) {
+            numPager++;
+            loadData();
+        }
+        if (list != null && list.size() <= 0) {
+            return null;
+        }
+        if (position > list.size()) {
+            return null;
+        }
+        return list.get(position);
+    }
+    public CommentNew getDanmu(int number) {
         if (position >= list.size() && needLoadMore) {
             numPager++;
             loadData();
