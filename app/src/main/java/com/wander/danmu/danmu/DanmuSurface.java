@@ -2,6 +2,7 @@ package com.wander.danmu.danmu;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.wander.danmu.EntryActivity;
+import com.wander.danmu.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.TimerTask;
  * email 805677461@qq.com
  */
 public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback {
-    private Context context;
+    private MainActivity context;
     public static List<CommentNew> commentNews = new ArrayList<>();
     private final DanDraw danmu1;
     private String tag = "surfaceView";
@@ -34,14 +36,15 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     private DanDraw danmu2;
     private DanDraw danmu3;
     private DanDraw danmu4;
-    private DanDraw danmu5;
-    private DanDraw danmu52;
-    private DanDraw danmu53;
+    private Bitmap bitmap1;
+    private Bitmap bitmap2;
+    private Bitmap bitmap3;
+    private Bitmap bitmap4;
     private final Paint p;
     private PorterDuffXfermode xfermode;
     private PorterDuffXfermode xfermode1;
 
-    public DanmuSurface(Context context) {
+    public DanmuSurface(MainActivity context) {
         super(context);
         this.context = context;
         rect = EntryActivity.rect;
@@ -52,13 +55,10 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         xfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
         xfermode1 = new PorterDuffXfermode(PorterDuff.Mode.SRC);
 
-        danmu1 = new DanDraw(context, 0, 7, 50);
-        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 8, 30);
-        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 5, 0);
-        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 6, 70);
-        danmu5 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 8, 30);
-        danmu52 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 2, 250);
-        danmu53 = new DanDraw(context, (danmu1.HEIGHT + 30) * 4, 1, 460);
+        danmu1 = new DanDraw(context, 0, 7, 50, 1);
+        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 8, 30, 2);
+        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 5, 0, 3);
+        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 6, 70, 4);
     }
 
     public void draw() {
@@ -75,9 +75,6 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu2.draw(canvas);
         danmu3.draw(canvas);
         danmu4.draw(canvas);
-//        danmu5.draw(canvas);
-//        danmu52.draw(canvas);
-//        danmu53.draw(canvas);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
@@ -108,7 +105,7 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d(tag, tag + "\t" + holder.toString());
-        startTimer();
+//        startTimer();
     }
 
     @Override

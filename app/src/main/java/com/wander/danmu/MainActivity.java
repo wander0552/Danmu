@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView;
     private RelativeLayout shot;
     private CircleImageView header;
+    private int position;
+    private int numPager = 1;
+    private boolean needLoadMore;
+
 
     @Override
     protected void onStart() {
@@ -69,12 +74,13 @@ public class MainActivity extends AppCompatActivity {
         relativeLayout = (RelativeLayout) findViewById(R.id.relative);
         danmuSurface = new DanmuSurface(this);
         relativeLayout.addView(danmuSurface);
-        danmuSurface.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, Main2Activity.class));
-            }
-        });
+
+//        danmuSurface.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(MainActivity.this, Main2Activity.class));
+//            }
+//        });
         initView();
 
 
@@ -107,6 +113,22 @@ public class MainActivity extends AppCompatActivity {
         shot.setDrawingCacheEnabled(true);
     }
 
+
+    public CommentNew getDanmu() {
+        if (position >= list.size() && needLoadMore) {
+            numPager++;
+            loadData();
+        }
+        if (list != null && list.size() <= 0) {
+            return null;
+        }
+        if (position > list.size()) {
+            return null;
+        }
+        return list.get(position);
+    }
+
+
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -121,21 +143,39 @@ public class MainActivity extends AppCompatActivity {
 
     void loadData() {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.GET, "http://nksingserver.kuwo.cn/nks/mobile/comment?act=list&uid=162444908&sid=426615546&wid=104329393&page=1", new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.GET, "http://nksingserver.kuwo.cn/nks/mobile/comment?act=list&uid=162444908&sid=426615546&wid=104329393&page=" + numPager, new Response.Listener<String>() {
 
             @Override
             public void onResponse(String s) {
                 JSONObject object = null;
                 try {
+                    if (TextUtils.isEmpty(s)) {
+                        return;
+                    }
                     object = new JSONObject(s);
                     Gson gson = new Gson();
-                    list = gson.fromJson(object.optString("list"), new TypeToken<List<CommentNew>>() {
-                    }.getType());
-                    DanmuSurface.commentNews.addAll(list);
+                    if (numPager == 1) {
+                        list = gson.fromJson(object.optString("list"), new TypeToken<List<CommentNew>>() {
+                        }.getType());
+                        if (list.size() < 20) {
+                            needLoadMore = false;
+                        }
+                        if (list.size() > 0) {
+                            danmuSurface.startTimer();
+                        }
+                    } else {
+                        List<CommentNew> commentNews = gson.fromJson(object.optString("list"), new TypeToken<List<CommentNew>>() {
+                        }.getType());
+                        if (commentNews.size() < 20) {
+                            needLoadMore = false;
+                        }
+                        list.addAll(commentNews);
+                    }
+
                     Log.e("list", list.get(0).toString());
                     try {
                         textView.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(list.get(3).getContent(), "utf-8")));
-                        ImageLoader.getInstance().displayImage(URLDecoder.decode(list.get(3).getAvatar(),"utf-8"), header, new ImageLoadingListener() {
+                        ImageLoader.getInstance().displayImage(URLDecoder.decode(list.get(3).getAvatar(), "utf-8"), header, new ImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String s, View view) {
 

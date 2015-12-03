@@ -11,11 +11,26 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextPaint;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.wander.danmu.EntryActivity;
+import com.wander.danmu.MainActivity;
 import com.wander.danmu.PixelTools;
 import com.wander.danmu.R;
+import com.wander.danmu.Utils.BitmapTools;
+import com.wander.danmu.Utils.CircleImageView;
+import com.wander.danmu.Utils.emoji.FaceConversionUtil;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 
 /**
@@ -25,47 +40,44 @@ import com.wander.danmu.R;
  */
 public class DanDraw extends baseDraw {
     public int HEIGHT;
-    private Context context;
+    private MainActivity context;
     private float step = 15;
     private final Paint paint;
-    private TextPaint textPaint;
     private Rect rect;
     private int height;
-    private Bitmap header;
-    private Paint headerPaint;
-    private RectF rectF;
-    private RectF headerRectF;
-    private int danmuWidth;
+    private Bitmap bitmap;
+    private Bitmap tempBitMap;
+    private int number;
+    private CommentNew commentNew;
+    private TextView content;
+    private CircleImageView header;
+    private View view;
 
-    public DanDraw(Context context, int height, int step, int x) {
+    /**
+     * 单个弹幕
+     *
+     * @param context
+     * @param height  弹幕所在位置
+     * @param step    弹幕的移动速度
+     * @param x       弹幕生成的起始位置
+     * @param number  弹幕的编号
+     */
+    public DanDraw(MainActivity context, int height, int step, int x, int number) {
         this.context = context;
         this.height = height;
+        this.number = number;
+        initView();
         HEIGHT = PixelTools.dip2px(context, 36);
         rect = EntryActivity.rect;
         this.step = step;
         setX(rect.right + PixelTools.dip2px(context, x));
         setY(height);
-        header = BitmapFactory.decodeResource(context.getResources(), R.drawable.header);
-
+        bitmap = BitmapTools.readBitMap(context, R.drawable.header);
+        tempBitMap = BitmapTools.readBitMap(context, R.drawable.transparency_bg);
+        commentNew = context.getDanmu();
+        setDanmu();
         paint = new Paint();
         paint.setAntiAlias(true);
-//        paint.setColor(0x55000000);
-//        paint.setStrokeWidth(0.3f);
-//        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-
-     /*   textPaint = new TextPaint();
-        textPaint.setAntiAlias(true);
-        textPaint.setColor(Color.WHITE);
-        textPaint.setTextSize(PixelTools.sp2px(context, 14));
-
-        BitmapShader bitmapShader = new BitmapShader(header, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-        headerPaint = new Paint();
-        headerPaint.setAntiAlias(true);
-        headerPaint.setShader(bitmapShader);
-
-        rectF = new RectF(0, 0, PixelTools.dip2px(context, 200), HEIGHT);
-        headerRectF = new RectF(0, 0, PixelTools.dip2px(context, 36), HEIGHT);
-        danmuWidth = PixelTools.dip2px(context, 200);*/
     }
 
     @Override
@@ -73,18 +85,79 @@ public class DanDraw extends baseDraw {
         super.drawView(canvas);
 
         //画背景
-        canvas.drawBitmap(header, 0, 0, paint);
-//        canvas.drawRoundRect(rectF, HEIGHT / 2, HEIGHT / 2, paint);
-        //画头像
+        if (bitmap == null || bitmap.isRecycled()) {
+            canvas.drawBitmap(tempBitMap, 0, 0, paint);
+            setX(getX() - step);
+            if (getX() < 0 - tempBitMap.getWidth()) {
+                bitmap = BitmapTools.readBitMap(context, R.drawable.header);
+                setX(rect.right);
+                commentNew = context.getDanmu();
+                setDanmu();
+            }
+        } else {
+            canvas.drawBitmap(bitmap, 0, 0, paint);
+            setX(getX() - step);
+            if (getX() < 0 - bitmap.getWidth()) {
+                bitmap = BitmapTools.readBitMap(context, R.drawable.header);
+                setX(rect.right);
+                commentNew = context.getDanmu();
+                setDanmu();
+            }
+        }
+    }
 
-//        canvas.drawCircle(0, rect.top, HEIGHT / 2, headerPaint);
-//        canvas.drawRoundRect(headerRectF, HEIGHT / 2, HEIGHT / 2, headerPaint);
+    private void initView() {
+        view = LayoutInflater.from(context).inflate(R.layout.item_danmu, null);
+        content = (TextView) view.findViewById(R.id.danMu_content);
+        header = (CircleImageView) view.findViewById(R.id.danMu_header);
+        view.setDrawingCacheEnabled(true);
+    }
 
-//        canvas.drawText("text赞一个", HEIGHT, rect.top, textPaint);
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
 
-        setX(getX() - step);
-        if (getX() < 0 - header.getWidth()) {
-            setX(rect.right);
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == 1) {
+                bitmap = view.getDrawingCache();
+            }
+        }
+    };
+
+    public void setDanmu() {
+        if (commentNew == null) {
+            return;
+        }
+        try {
+            content.setText(FaceConversionUtil.getInstace(context).getExpressionString(URLDecoder.decode(commentNew.getContent(), "utf-8")));
+            ImageLoader.getInstance().displayImage(URLDecoder.decode(commentNew.getAvatar(), "utf-8"), header, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String s, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                    header.setImageBitmap(bitmap);
+                    Message msg = new Message();
+                    msg.what = 1;
+                    handler.sendMessageAtTime(msg, 100);
+                }
+
+                @Override
+                public void onLoadingCancelled(String s, View view) {
+
+                }
+            });
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 }
