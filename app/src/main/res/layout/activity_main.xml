@@ -1,23 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relative"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg" tools:context=".MainActivity"
-    android:id="@+id/relative">
+    android:background="@drawable/bg"
+    tools:context=".MainActivity">
+
+    <include
+        android:id="@+id/danMu1"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        layout="@layout/item_danmu" />
+
+    <include
+        android:id="@+id/danMu2"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@id/danMu1"
+        layout="@layout/item_danmu" />
+
+    <include
+        android:id="@+id/danMu3"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@id/danMu2"
+        layout="@layout/item_danmu" />
+
+    <include
+        android:id="@+id/danMu4"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_below="@id/danMu3"
+        layout="@layout/item_danmu" />
+
     <RelativeLayout
         android:id="@+id/play_common_rl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@drawable/corners_black_half"
-        android:visibility="invisible"
-        android:paddingRight="20dip" >
+        android:paddingRight="20dip"
+        android:visibility="invisible">
 
         <com.wander.danmu.Utils.CircleImageView
             android:id="@+id/play_common_img_usericon"
             android:layout_width="36dip"
-            android:layout_height="36dip"
-            />
+            android:layout_height="36dip" />
+
         <TextView
             android:id="@+id/play_common_text_content"
             android:layout_width="wrap_content"
@@ -30,13 +60,13 @@
             android:textColor="#ededed"
             android:textSize="14sp" />
     </RelativeLayout>
+
     <ImageView
+        android:id="@+id/image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:id="@+id/image"
-        android:scaleType="centerInside"
         android:layout_above="@id/play_common_rl"
         android:layout_marginBottom="10dp"
-        />
+        android:layout_marginLeft="20dp"
+        android:scaleType="centerInside" />
 </RelativeLayout>

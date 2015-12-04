@@ -28,11 +28,11 @@ import java.util.TimerTask;
 public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback {
     private MainActivity context;
     public static List<CommentNew> commentNews = new ArrayList<>();
-    private final DanDraw danmu1;
     private String tag = "surfaceView";
     private Canvas canvas;
     private float step = 15;
     private Rect rect;
+    private DanDraw danmu1;
     private DanDraw danmu2;
     private DanDraw danmu3;
     private DanDraw danmu4;
@@ -77,6 +77,26 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         danmu4.draw(canvas);
 
         getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    public void setDanmuBitmap(int number,Bitmap bitmap){
+        switch (number){
+            case 1:
+                danmu1.setBitmap(bitmap);
+                break;
+            case 2:
+                danmu2.setBitmap(bitmap);
+                break;
+            case 3:
+                danmu3.setBitmap(bitmap);
+                break;
+            case 4:
+                danmu4.setBitmap(bitmap);
+                break;
+            default:
+                break;
+        }
+
     }
 
     public Timer timer = null;

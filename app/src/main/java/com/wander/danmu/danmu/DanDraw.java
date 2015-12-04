@@ -57,6 +57,8 @@ public class DanDraw extends baseDraw {
     private TextView content;
     private CircleImageView header;
     private View view;
+    private int tempStep;
+    private boolean isLoading;
 
     /**
      * 单个弹幕
@@ -71,16 +73,14 @@ public class DanDraw extends baseDraw {
         this.context = context;
         this.height = height;
         this.number = number;
-        initView();
         HEIGHT = PixelTools.dip2px(context, 36);
         rect = EntryActivity.rect;
         this.step = step;
+        tempStep = step;
         setX(rect.right + PixelTools.dip2px(context, x));
         setY(height);
-        bitmap = BitmapTools.readBitMap(context, R.drawable.header);
+        bitmap = BitmapTools.readBitMap(context, R.drawable.transparency_bg);
         tempBitMap = BitmapTools.readBitMap(context, R.drawable.transparency_bg);
-        commentNew = context.getDanmu();
-        setDanmu();
         paint = new Paint();
         paint.setAntiAlias(true);
     }
@@ -91,91 +91,30 @@ public class DanDraw extends baseDraw {
 
         //画背景
         if (bitmap == null || bitmap.isRecycled()) {
-            canvas.drawBitmap(tempBitMap, 0, 0, paint);
-            setX(getX() - step);
-            if (getX() < 0 - tempBitMap.getWidth()) {
-                bitmap = BitmapTools.readBitMap(context, R.drawable.header);
-                setX(rect.right);
-                commentNew = context.getDanmu();
-                setDanmu();
-            }
+//            canvas.drawBitmap(tempBitMap, 0, 0, paint);
+            setX(rect.right);
         } else {
             canvas.drawBitmap(bitmap, 0, 0, paint);
             setX(getX() - step);
-            if (getX() < 0 - bitmap.getWidth()) {
-                bitmap = BitmapTools.readBitMap(context, R.drawable.header);
+            if (isLoading){
                 setX(rect.right);
-                commentNew = context.getDanmu();
-                setDanmu();
+            }
+            if (getX() < 0 - bitmap.getWidth()) {
+                bitmap = BitmapTools.readBitMap(context, R.drawable.transparency_bg);
+                isLoading = true;
+                setX(rect.right);
+                context.getDanmu(number);
             }
         }
     }
 
-    private void initView() {
-        view = LayoutInflater.from(context).inflate(R.layout.item_danmu, null);
-        content = (TextView) view.findViewById(R.id.danMu_content);
-        header = (CircleImageView) view.findViewById(R.id.danMu_header);
-        view.setDrawingCacheEnabled(true);
-    }
 
     public Bitmap getBitmap() {
         return bitmap;
     }
 
     public void setBitmap(Bitmap bitmap) {
+        isLoading = false;
         this.bitmap = bitmap;
-    }
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 1) {
-                bitmap = view.getDrawingCache();
-                context.imageView.setImageBitmap(bitmap);
-//                BitmapTools.saveBitmap2file(bitmap, "good", context);
-            }
-        }
-    };
-
-    public void setDanmu() {
-        if (commentNew == null) {
-            return;
-        }
-        try {
-            content.setText(FaceConversionUtil.getInstace(context).getExpressionString(URLDecoder.decode(commentNew.getContent(), "utf-8")));
-            try {
-                String decode = URLDecoder.decode(commentNew.getAvatar(), "utf-8");
-                ImageLoader.getInstance().loadImage(decode, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String s, View view) {
-
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String s, View view, FailReason failReason) {
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                        header.setImageBitmap(bitmap);
-                        Message msg = new Message();
-                        msg.what = 1;
-                        handler.sendMessageAtTime(msg, 100);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String s, View view) {
-
-                    }
-                });
-
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 }

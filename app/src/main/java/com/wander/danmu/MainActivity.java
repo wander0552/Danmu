@@ -13,9 +13,11 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -56,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView header;
     private int position;
     private int numPager = 1;
-    private boolean needLoadMore;
+    private boolean needLoadMore = true;
+    private boolean isLoading;
+    private LinearLayout danmu1, danmu2, danmu3, danmu4;
 
 
     @Override
@@ -89,19 +93,15 @@ public class MainActivity extends AppCompatActivity {
 //        danmuSurface.startTimer();
         loadData();
 
-        BitmapUtils bitmapUtils = new BitmapUtils(this);
-//        bitmapUtils.getBitmapFileFromDiskCache(imgURL);
 
-        ImageLoader instance = ImageLoader.getInstance();
     }
+
 
     void initView() {
         imageView = (ImageView) findViewById(R.id.image);
         shot = (RelativeLayout) findViewById(R.id.play_common_rl);
         textView = (TextView) findViewById(R.id.play_common_text_content);
         header = (CircleImageView) findViewById(R.id.play_common_img_usericon);
-
-//        textView.setVisibility(View.INVISIBLE);
         shot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -111,34 +111,88 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         shot.setDrawingCacheEnabled(true);
+
+        danmu1 = (LinearLayout) findViewById(R.id.danMu1);
+        danmu2 = (LinearLayout) findViewById(R.id.danMu2);
+        danmu3 = (LinearLayout) findViewById(R.id.danMu3);
+        danmu4 = (LinearLayout) findViewById(R.id.danMu4);
+        danmu1.setDrawingCacheEnabled(true);
+        danmu2.setDrawingCacheEnabled(true);
+        danmu3.setDrawingCacheEnabled(true);
+        danmu4.setDrawingCacheEnabled(true);
+
     }
 
-
-    public CommentNew getDanmu() {
-        if (position >= list.size() && needLoadMore) {
+    public void getDanmu(int number) {
+        position++;
+        if (position >= list.size() && needLoadMore&&!isLoading) {
+            isLoading = true;
             numPager++;
             loadData();
         }
         if (list != null && list.size() <= 0) {
-            return null;
+            return;
         }
-        if (position > list.size()) {
-            return null;
+        if (position >= list.size()) {
+            position--;
+            return;
         }
-        return list.get(position);
+        CommentNew commentNew = list.get(position);
+        switch (number) {
+            case 1:
+                getBitmap(danmu1, commentNew, number);
+                break;
+            case 2:
+                getBitmap(danmu2, commentNew, number);
+                break;
+            case 3:
+                getBitmap(danmu3, commentNew, number);
+                break;
+            case 4:
+                getBitmap(danmu4, commentNew, number);
+                break;
+            default:
+                break;
+        }
     }
-    public CommentNew getDanmu(int number) {
-        if (position >= list.size() && needLoadMore) {
-            numPager++;
-            loadData();
-        }
-        if (list != null && list.size() <= 0) {
-            return null;
-        }
-        if (position > list.size()) {
-            return null;
-        }
-        return list.get(position);
+
+    private void getBitmap(final LinearLayout view, final CommentNew commentNew, final int number) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TextView content0 = (TextView) view.findViewById(R.id.danMu_content);
+                ImageView header0 = (ImageView) view.findViewById(R.id.danMu_header);
+                try {
+                    content0.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(commentNew.getContent(), "utf-8")));
+                    String decode = URLDecoder.decode(commentNew.getAvatar(), "utf-8");
+                    ImageLoader.getInstance().displayImage(decode, header0, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String s, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                            Message msg = new Message();
+                            msg.what = number;
+                            handler.sendMessageAtTime(msg, 100);
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String s, View view) {
+
+                        }
+                    });
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 
@@ -146,11 +200,36 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 1) {
+/*            if (msg.what == 1) {
                 Bitmap bitmap = shot.getDrawingCache();
                 imageView.setImageBitmap(bitmap);
 //                BitmapTools.saveBitmap2file(bitmap, "good", MainActivity.this);
+            }*/
+            switch (msg.what) {
+                case 0:
+                    Bitmap bitmap = shot.getDrawingCache();
+                    imageView.setImageBitmap(bitmap);
+                    break;
+                case 1:
+                    Bitmap drawingCache1 = danmu1.getDrawingCache();
+                    danmuSurface.setDanmuBitmap(1, drawingCache1);
+                    break;
+                case 2:
+                    Bitmap drawingCache2 = danmu2.getDrawingCache();
+                    danmuSurface.setDanmuBitmap(2, drawingCache2);
+                    break;
+                case 3:
+                    Bitmap drawingCache3 = danmu3.getDrawingCache();
+                    danmuSurface.setDanmuBitmap(3, drawingCache3);
+                    break;
+                case 4:
+                    Bitmap drawingCache4 = danmu4.getDrawingCache();
+                    danmuSurface.setDanmuBitmap(4, drawingCache4);
+                    break;
+                default:
+                    break;
             }
+
         }
     };
 
@@ -183,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
                             needLoadMore = false;
                         }
                         list.addAll(commentNews);
+                        isLoading = false;
                     }
 
                     Log.e("list", list.get(0).toString());
@@ -203,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                                 header.setImageBitmap(bitmap);
                                 Message msg = new Message();
-                                msg.what = 1;
+                                msg.what = 0;
                                 handler.sendMessageAtTime(msg, 100);
                             }
 
