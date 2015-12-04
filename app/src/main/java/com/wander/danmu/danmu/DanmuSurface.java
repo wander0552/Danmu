@@ -111,7 +111,7 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
                     draw();
                 }
             };
-            timer.schedule(task, 10, 40);
+            timer.schedule(task, 10, 10);
         }
     }
 

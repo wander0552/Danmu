@@ -59,6 +59,7 @@ public class DanDraw extends baseDraw {
     private View view;
     private int tempStep;
     private boolean isLoading;
+    private boolean hasNew;
 
     /**
      * 单个弹幕
@@ -93,6 +94,7 @@ public class DanDraw extends baseDraw {
         if (bitmap == null || bitmap.isRecycled()) {
 //            canvas.drawBitmap(tempBitMap, 0, 0, paint);
             setX(rect.right);
+            context.getDanmu(number);
         } else {
             canvas.drawBitmap(bitmap, 0, 0, paint);
             setX(getX() - step);
@@ -103,7 +105,10 @@ public class DanDraw extends baseDraw {
                 bitmap = BitmapTools.readBitMap(context, R.drawable.transparency_bg);
                 isLoading = true;
                 setX(rect.right);
-                context.getDanmu(number);
+                hasNew = context.getDanmu(number);
+            }
+            if (!hasNew){
+                hasNew =context.getDanmu(number);
             }
         }
     }

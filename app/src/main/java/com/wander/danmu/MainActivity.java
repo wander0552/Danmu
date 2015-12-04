@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean needLoadMore = true;
     private boolean isLoading;
     private LinearLayout danmu1, danmu2, danmu3, danmu4;
+    private CommentNew tempComment;
 
 
     @Override
@@ -111,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         shot.setDrawingCacheEnabled(true);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.add(position + 1, tempComment);
+            }
+        });
 
         danmu1 = (LinearLayout) findViewById(R.id.danMu1);
         danmu2 = (LinearLayout) findViewById(R.id.danMu2);
@@ -123,19 +130,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void getDanmu(int number) {
+    public boolean getDanmu(int number) {
         position++;
-        if (position >= list.size() && needLoadMore&&!isLoading) {
+        if (position >= list.size() && needLoadMore && !isLoading) {
             isLoading = true;
             numPager++;
             loadData();
         }
         if (list != null && list.size() <= 0) {
-            return;
+            return false;
         }
         if (position >= list.size()) {
             position--;
-            return;
+            return false;
         }
         CommentNew commentNew = list.get(position);
         switch (number) {
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
+        return true;
     }
 
     private void getBitmap(final LinearLayout view, final CommentNew commentNew, final int number) {
@@ -209,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     Bitmap bitmap = shot.getDrawingCache();
                     imageView.setImageBitmap(bitmap);
+                    tempComment.setContent("我新加了一个评论");
                     break;
                 case 1:
                     Bitmap drawingCache1 = danmu1.getDrawingCache();
@@ -264,11 +273,12 @@ public class MainActivity extends AppCompatActivity {
                         list.addAll(commentNews);
                         isLoading = false;
                     }
-
-                    Log.e("list", list.get(0).toString());
+//// TODO: 2015/12/4 text
+                    Log.e("list", numPager + "\t" + list.get(0).toString());
                     try {
-                        textView.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(list.get(3).getContent(), "utf-8")));
-                        ImageLoader.getInstance().displayImage(URLDecoder.decode(list.get(3).getAvatar(), "utf-8"), header, new ImageLoadingListener() {
+                        tempComment = list.get(3);
+                        textView.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(tempComment.getContent(), "utf-8")));
+                        ImageLoader.getInstance().displayImage(URLDecoder.decode(tempComment.getAvatar(), "utf-8"), header, new ImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String s, View view) {
 
