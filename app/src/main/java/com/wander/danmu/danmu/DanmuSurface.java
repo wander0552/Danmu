@@ -18,6 +18,7 @@ import com.wander.danmu.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,10 +37,6 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
     private DanDraw danmu2;
     private DanDraw danmu3;
     private DanDraw danmu4;
-    private Bitmap bitmap1;
-    private Bitmap bitmap2;
-    private Bitmap bitmap3;
-    private Bitmap bitmap4;
     private final Paint p;
     private PorterDuffXfermode xfermode;
     private PorterDuffXfermode xfermode1;
@@ -55,10 +52,10 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         xfermode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
         xfermode1 = new PorterDuffXfermode(PorterDuff.Mode.SRC);
 
-        danmu1 = new DanDraw(context, 0, 7, 50, 1);
-        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 8, 30, 2);
-        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 5, 0, 3);
-        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 6, 70, 4);
+        danmu1 = new DanDraw(context, 0, 80, 1);
+        danmu2 = new DanDraw(context, danmu1.HEIGHT + 30, 30, 2);
+        danmu3 = new DanDraw(context, (danmu1.HEIGHT + 30) * 2, 0, 3);
+        danmu4 = new DanDraw(context, (danmu1.HEIGHT + 30) * 3, 190, 4);
     }
 
     public void draw() {
@@ -79,8 +76,8 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
         getHolder().unlockCanvasAndPost(canvas);
     }
 
-    public void setDanmuBitmap(int number,Bitmap bitmap){
-        switch (number){
+    public void setDanmuBitmap(int number, Bitmap bitmap) {
+        switch (number) {
             case 1:
                 danmu1.setBitmap(bitmap);
                 break;
@@ -111,7 +108,7 @@ public class DanmuSurface extends SurfaceView implements SurfaceHolder.Callback 
                     draw();
                 }
             };
-            timer.schedule(task, 10, 10);
+            timer.schedule(task, 10, 20);
         }
     }
 

@@ -35,6 +35,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.wander.danmu.Utils.BitmapTools;
 import com.wander.danmu.Utils.CircleImageView;
+import com.wander.danmu.Utils.StringUtil;
 import com.wander.danmu.Utils.emoji.FaceConversionUtil;
 import com.wander.danmu.danmu.CommentNew;
 import com.wander.danmu.danmu.DanmuSurface;
@@ -91,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
         danmuSurface.setZOrderOnTop(true);
         danmuSurface.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-//        danmuSurface.startTimer();
         loadData();
 
 
@@ -131,35 +131,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean getDanmu(int number) {
-        position++;
-        if (position >= list.size() && needLoadMore && !isLoading) {
-            isLoading = true;
-            numPager++;
-            loadData();
-        }
-        if (list != null && list.size() <= 0) {
-            return false;
-        }
-        if (position >= list.size()) {
-            position--;
-            return false;
-        }
-        CommentNew commentNew = list.get(position);
-        switch (number) {
-            case 1:
-                getBitmap(danmu1, commentNew, number);
-                break;
-            case 2:
-                getBitmap(danmu2, commentNew, number);
-                break;
-            case 3:
-                getBitmap(danmu3, commentNew, number);
-                break;
-            case 4:
-                getBitmap(danmu4, commentNew, number);
-                break;
-            default:
-                break;
+        synchronized (list) {
+            position++;
+            if (position >= list.size() && needLoadMore && !isLoading) {
+                isLoading = true;
+                numPager++;
+                loadData();
+            }
+            if (list != null && list.size() <= 0) {
+                return false;
+            }
+            if (position >= list.size()) {
+                position--;
+                return false;
+            }
+            CommentNew commentNew = list.get(position);
+
+            switch (number) {
+                case 1:
+                    getBitmap(danmu1, commentNew, number);
+                    break;
+                case 2:
+                    getBitmap(danmu2, commentNew, number);
+                    break;
+                case 3:
+                    getBitmap(danmu3, commentNew, number);
+                    break;
+                case 4:
+                    getBitmap(danmu4, commentNew, number);
+                    break;
+                default:
+                    break;
+            }
         }
         return true;
     }
@@ -173,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     content0.setText(FaceConversionUtil.getInstace(MainActivity.this).getExpressionString(URLDecoder.decode(commentNew.getContent(), "utf-8")));
                     String decode = URLDecoder.decode(commentNew.getAvatar(), "utf-8");
-                    ImageLoader.getInstance().displayImage(decode, header0, new ImageLoadingListener() {
+                    ImageLoader.getInstance().displayImage(StringUtil.smartPicUrl(decode, 's', commentNew.getUid()), header0, new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String s, View view) {
 
@@ -181,7 +184,9 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onLoadingFailed(String s, View view, FailReason failReason) {
-
+                            Message msg = new Message();
+                            msg.what = number;
+                            handler.sendMessageAtTime(msg, 100);
                         }
 
                         @Override
@@ -215,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
             }*/
             switch (msg.what) {
                 case 0:
-                    Bitmap bitmap = shot.getDrawingCache();
+                    Bitmap bitmap = shot.getDrawingCache(true);
                     imageView.setImageBitmap(bitmap);
                     tempComment.setContent("我新加了一个评论");
                     break;

@@ -9,7 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class EntryActivity extends AppCompatActivity {
-    public static Rect rect;
+    public static Rect rect = new Rect();
 
 
     @Override
@@ -23,7 +23,6 @@ public class EntryActivity extends AppCompatActivity {
                 finish();
             }
         }, 100);
-
     }
 
     @Override
